@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/css" href="css/style.css"?>
+
+<employees xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xsi:noNamespaceSchemaLocation="employee.xsd">
+
+    <employee empId="E101">
+        <name>Swaraj Gondchawar</name>
+        <department>IT</department>
+        <designation>Software Engineer</designation>
+        <salary>60000</salary>
+        <email>swaraj@gmail.com</email>
+        <phone>9876543210</phone>
+        <joiningDate>2023-06-15</joiningDate>
+    </employee>
+
+    <employee empId="E102">
+        <name>Rahul Sharma</name>
+        <department>HR</department>
+        <designation>HR Manager</designation>
+        <salary>55000</salary>
+        <email>rahul@gmail.com</email>
+        <phone>9123456780</phone>
+        <joiningDate>2022-03-10</joiningDate>
+    </employee>
+
+    <employee empId="E103">
+        <name>Priya Deshmukh</name>
+        <department>Finance</department>
+        <designation>Accountant</designation>
+        <salary>50000</salary>
+        <email>priya@gmail.com</email>
+        <phone>9012345678</phone>
+        <joiningDate>2021-11-20</joiningDate>
+    </employee>
+
+    <employee empId="E104">
+        <name>Amit Kulkarni</name>
+        <department>Marketing</department>
+        <designation>Marketing Executive</designation>
+        <salary>48000</salary>
+        <email>amit@gmail.com</email>
+        <phone>8899776655</phone>
+        <joiningDate>2022-08-05</joiningDate>
+    </employee>
+
+    <employee empId="E105">
+        <name>Neha Patil</name>
+        <department>IT</department>
+        <designation>Frontend Developer</designation>
+        <salary>62000</salary>
+        <email>neha@gmail.com</email>
+        <phone>9988776655</phone>
+        <joiningDate>2024-01-12</joiningDate>
+    </employee>
+
+    <employee empId="E106">
+        <name>Rohit Verma</name>
+        <department>Operations</department>
+        <designation>Operations Manager</designation>
+        <salary>70000</salary>
+        <email>rohit@gmail.com</email>
+        <phone>9090909090</phone>
+        <joiningDate>2020-05-18</joiningDate>
+    </employee>
+
+</employees>

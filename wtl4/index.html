@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Advanced Calculator</title>
+
+<style>
+    .title {
+    text-align: center;
+    color: white;
+    margin-bottom: 20px;
+    font-size: 26px;
+    letter-spacing: 1px;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Segoe UI", sans-serif;
+}
+
+body {
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: linear-gradient(135deg, #5f72bd, #9b23ea);
+}
+
+/* Calculator Container */
+.calculator {
+    <h2 class="title">Simple Calculator</h2>
+    width: 450px;
+    padding: 30px;
+    border-radius: 25px;
+    background: rgba(255, 255, 255, 0.12);
+    backdrop-filter: blur(20px);
+    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.35);
+    animation: fadeIn 0.6s ease-in-out;
+}
+
+/* Animation */
+@keyframes fadeIn {
+    from { opacity: 0; transform: scale(0.9); }
+    to { opacity: 1; transform: scale(1); }
+}
+
+/* Display */
+.display {
+    height: 80px;
+    background: #111;
+    color: #00ffd5;
+    font-size: 28px;
+    text-align: right;
+    padding: 20px;
+    border-radius: 15px;
+    margin-bottom: 25px;
+    overflow-x: auto;
+}
+
+/* Buttons Grid */
+.buttons {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 15px;
+}
+
+/* General Button */
+button {
+    padding: 20px;
+    font-size: 20px;
+    border-radius: 15px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    background: rgba(255,255,255,0.2);
+    color: white;
+}
+
+/* Hover */
+button:hover {
+    transform: translateY(-3px);
+    background: rgba(255,255,255,0.35);
+}
+
+/* Click */
+button:active {
+    transform: scale(0.95);
+}
+
+/* Special Buttons */
+.operator {
+    background: #ff6b6b;
+}
+
+.equal {
+    background: #00e676;
+    color: black;
+    grid-column: span 2;
+}
+
+.clear {
+    background: #ff3d3d;
+}
+
+.delete {
+    background: #ffa502;
+}
+
+/* Responsive */
+@media (max-width: 500px) {
+    .calculator {
+        width: 95%;
+    }
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="calculator">
+
+    <h2 class="title">Simple Calculator</h2>
+
+    <div id="display" class="display">0</div>
+
+
+    <div class="buttons">
+        <button class="clear" onclick="clearDisplay()">C</button>
+        <button class="delete" onclick="deleteLast()">DEL</button>
+        <button class="operator" onclick="append('/')">÷</button>
+        <button class="operator" onclick="append('*')">×</button>
+
+        <button onclick="append('7')">7</button>
+        <button onclick="append('8')">8</button>
+        <button onclick="append('9')">9</button>
+        <button class="operator" onclick="append('-')">−</button>
+
+        <button onclick="append('4')">4</button>
+        <button onclick="append('5')">5</button>
+        <button onclick="append('6')">6</button>
+        <button class="operator" onclick="append('+')">+</button>
+
+        <button onclick="append('1')">1</button>
+        <button onclick="append('2')">2</button>
+        <button onclick="append('3')">3</button>
+        <button onclick="append('.')">.</button>
+
+        <button onclick="append('0')">0</button>
+        <button class="equal" onclick="calculate()">=</button>
+    </div>
+
+</div>
+
+<script>
+
+let display = document.getElementById("display");
+
+/* Append values */
+function append(value) {
+    if (display.innerText === "0") {
+        display.innerText = value;
+    } else {
+        display.innerText += value;
+    }
+}
+
+/* Clear */
+function clearDisplay() {
+    display.innerText = "0";
+}
+
+/* Delete */
+function deleteLast() {
+    display.innerText = display.innerText.slice(0, -1);
+    if (display.innerText === "") {
+        display.innerText = "0";
+    }
+}
+
+/* Calculate */
+function calculate() {
+    try {
+        let expression = display.innerText;
+
+        // Validation: only numbers and operators allowed
+        if (!/^[0-9+\-*/.]+$/.test(expression)) {
+            alert("Invalid Input!");
+            return;
+        }
+
+        let result = eval(expression);
+
+        if (!isFinite(result)) {
+            alert("Cannot divide by zero!");
+            return;
+        }
+
+        display.innerText = result;
+
+    } catch {
+        alert("Invalid Calculation!");
+    }
+}
+
+/* Keyboard Support */
+document.addEventListener("keydown", function(event) {
+    if ((event.key >= "0" && event.key <= "9") ||
+        ["+", "-", "*", "/", "."].includes(event.key)) {
+        append(event.key);
+    }
+    else if (event.key === "Enter") {
+        calculate();
+    }
+    else if (event.key === "Backspace") {
+        deleteLast();
+    }
+    else if (event.key === "Escape") {
+        clearDisplay();
+    }
+});
+
+</script>
+
+</body>
+</html>

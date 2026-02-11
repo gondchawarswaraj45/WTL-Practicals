@@ -1,0 +1,12 @@
+<!ELEMENT employees (employee+)>
+
+<!ELEMENT employee (name, department, designation, salary, email, phone, joiningDate)>
+<!ATTLIST employee empId CDATA #REQUIRED>
+
+<!ELEMENT name (#PCDATA)>
+<!ELEMENT department (#PCDATA)>
+<!ELEMENT designation (#PCDATA)>
+<!ELEMENT salary (#PCDATA)>
+<!ELEMENT email (#PCDATA)>
+<!ELEMENT phone (#PCDATA)>
+<!ELEMENT joiningDate (#PCDATA)>
