@@ -1,0 +1,1261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Society Management System</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome Icons -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #f7f9fc;
+            --card-bg: #ffffff;
+            --border-color: rgba(0, 0, 0, 0.08);
+            --primary-grad: linear-gradient(135deg, #ff416c, #ff4b2b); /* Red to Orange */
+            --secondary-grad: linear-gradient(135deg, #ff8c00, #ffa500); /* Orange accents */
+            --accent-color: #ff4b2b;
+            --text-primary: #1a202c;
+            --text-secondary: #718096;
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-primary);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Glassmorphism details */
+        .glass-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 24px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+        }
+
+        /* Gradient Text */
+        .grad-text {
+            background: var(--primary-grad);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 700;
+        }
+
+        /* Login Screen */
+        .login-container {
+            max-width: 450px;
+            margin: 100px auto;
+        }
+
+        /* Navigation Sidebar */
+        .sidebar {
+            background: #ffffff;
+            border-right: 1px solid var(--border-color);
+            min-height: 100vh;
+            padding-top: 24px;
+        }
+
+        .sidebar .nav-link {
+            color: var(--text-secondary);
+            padding: 12px 24px;
+            border-radius: 8px;
+            margin: 4px 16px;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .sidebar .nav-link:hover {
+            color: #ff4b2b;
+            background: rgba(255, 75, 43, 0.05);
+        }
+
+        .sidebar .nav-link.active {
+            background: var(--primary-grad);
+            color: #fff;
+            box-shadow: 0 4px 15px rgba(255, 75, 43, 0.3);
+        }
+
+        /* Stats Cards */
+        .stat-card {
+            background: linear-gradient(135deg, rgba(255, 75, 43, 0.08), rgba(255, 140, 0, 0.04));
+            border: 1px solid rgba(255, 75, 43, 0.15);
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .stat-card h3 {
+            font-size: 2.5rem;
+            margin-bottom: 5px;
+            background: var(--primary-grad);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* Buttons & Forms */
+        .btn-grad {
+            background: var(--primary-grad);
+            border: none;
+            color: white;
+            font-weight: 600;
+            padding: 10px 24px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-grad:hover {
+            opacity: 0.95;
+            transform: translateY(-2px);
+            color: white;
+            box-shadow: 0 4px 12px rgba(255, 75, 43, 0.2);
+        }
+
+        .form-control, .form-select {
+            background-color: #ffffff;
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+            border-radius: 8px;
+        }
+
+        .form-control:focus, .form-select:focus {
+            background-color: #ffffff;
+            border-color: var(--accent-color);
+            box-shadow: 0 0 8px rgba(255, 75, 43, 0.25);
+            color: var(--text-primary);
+        }
+
+        /* Table custom styling */
+        .table {
+            color: var(--text-primary);
+        }
+        .table th {
+            color: var(--text-secondary);
+            border-bottom: 2px solid var(--border-color);
+        }
+        .table td {
+            border-bottom: 1px solid var(--border-color);
+            color: var(--text-primary);
+        }
+
+        /* Badges */
+        .badge-pending { background-color: #ff9800; }
+        .badge-paid { background-color: #4caf50; }
+        .badge-overdue { background-color: #f44336; }
+        .badge-resolved { background-color: #00bcd4; }
+    </style>
+</head>
+<body>
+
+    <!-- LOGIN GATE -->
+    <div id="loginGate" class="container">
+        <div class="login-container glass-card mt-5">
+            <h2 class="text-center mb-4 grad-text"><i class="fa-solid fa-building-user me-2"></i>Society Portal</h2>
+            <div id="loginError" class="alert alert-danger d-none"></div>
+            <form id="loginForm">
+                <div class="mb-3">
+                    <label class="form-label">Username</label>
+                    <input type="text" id="username" class="form-control" placeholder="e.g. admin, resident1" required>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Password</label>
+                    <input type="password" id="password" class="form-control" placeholder="Enter password" required>
+                </div>
+                <button type="submit" class="btn btn-grad w-100 mt-2">Login</button>
+            </form>
+            <div class="mt-4 text-center text-muted">
+                <p class="mb-1"><small>Default Demo Logins:</small></p>
+                <code class="d-block">admin / admin123</code>
+                <code class="d-block">secretary / secretary123</code>
+                <code class="d-block">resident1 / resident123</code>
+            </div>
+        </div>
+    </div>
+
+    <!-- MAIN APP SCREEN -->
+    <div id="appContainer" class="d-none">
+        <div class="container-fluid">
+            <div class="row">
+                <!-- SIDEBAR NAV -->
+                <div class="col-md-3 col-lg-2 sidebar d-flex flex-column justify-content-between">
+                    <div>
+                        <div class="px-4 py-3 text-center">
+                            <h4 class="grad-text mb-0"><i class="fa-solid fa-building me-2"></i>SMS Admin</h4>
+                            <span id="userRoleBadge" class="badge bg-secondary mt-2">Resident</span>
+                        </div>
+                        <hr class="mx-3 border-secondary">
+                        <ul class="nav nav-pills flex-column mb-auto">
+                            <li><a href="#" class="nav-link active" onclick="switchTab('dashboard')"><i class="fa-solid fa-chart-line me-2"></i>Overview</a></li>
+                            <li><a href="#" class="nav-link" onclick="switchTab('flats')"><i class="fa-solid fa-house me-2"></i>Flats & Residents</a></li>
+                            <li><a href="#" class="nav-link" onclick="switchTab('billing')"><i class="fa-solid fa-receipt me-2"></i>Bills & Expenses</a></li>
+                            <li><a href="#" class="nav-link" onclick="switchTab('complaints')"><i class="fa-solid fa-circle-exclamation me-2"></i>Complaints</a></li>
+                            <li><a href="#" class="nav-link" onclick="switchTab('visitors')"><i class="fa-solid fa-user-lock me-2"></i>Visitors</a></li>
+                            <li><a href="#" class="nav-link" onclick="switchTab('notices')"><i class="fa-solid fa-bullhorn me-2"></i>Notices & Polls</a></li>
+                            <li><a href="#" class="nav-link" onclick="switchTab('parking')"><i class="fa-solid fa-car me-2"></i>Parking</a></li>
+                            <li><a href="#" class="nav-link" onclick="switchTab('events')"><i class="fa-solid fa-calendar-days me-2"></i>Events & Amenities</a></li>
+                        </ul>
+                    </div>
+                    <div class="p-3">
+                        <div class="d-flex align-items-center mb-3">
+                            <i class="fa-solid fa-circle-user fa-2x me-2 text-primary"></i>
+                            <div>
+                                <h6 class="mb-0 text-dark" id="navFullName">User Name</h6>
+                                <small class="text-muted" id="navUsername">@username</small>
+                            </div>
+                        </div>
+                        <button class="btn btn-outline-danger w-100 btn-sm" onclick="logout()"><i class="fa-solid fa-sign-out me-2"></i>Logout</button>
+                    </div>
+                </div>
+
+                <!-- MAIN CONTENT AREA -->
+                <div class="col-md-9 col-lg-10 p-4">
+                    
+                    <!-- TAB: DASHBOARD -->
+                    <div id="tab-dashboard" class="tab-content">
+                        <h2 class="mb-4">Welcome to Society Management</h2>
+                        <div class="row mb-4">
+                            <div class="col-md-3">
+                                <div class="stat-card glass-card">
+                                    <p class="text-muted mb-1">Total Flats</p>
+                                    <h3 id="statFlats">0</h3>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="stat-card glass-card">
+                                    <p class="text-muted mb-1">Active Residents</p>
+                                    <h3 id="statResidents">0</h3>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="stat-card glass-card">
+                                    <p class="text-muted mb-1">Pending Complaints</p>
+                                    <h3 id="statComplaints">0</h3>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="stat-card glass-card">
+                                    <p class="text-muted mb-1">Available Parking</p>
+                                    <h3 id="statParking">0</h3>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="glass-card">
+                                    <h4><i class="fa-solid fa-bullhorn me-2 text-warning"></i>Recent Notices</h4>
+                                    <div id="dashboardNotices" class="mt-3"></div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="glass-card">
+                                    <h4><i class="fa-solid fa-calendar me-2 text-primary"></i>Upcoming Events</h4>
+                                    <div id="dashboardEvents" class="mt-3"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- TAB: FLATS -->
+                    <div id="tab-flats" class="tab-content d-none">
+                        <h2 class="mb-4">Flats & Residents Directory</h2>
+                        <div class="glass-card">
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <h4>Flat Directory</h4>
+                            </div>
+                            <div class="table-responsive">
+                                <table class="table align-middle">
+                                    <thead>
+                                        <tr>
+                                            <th>Flat No</th>
+                                            <th>Floor</th>
+                                            <th>Block</th>
+                                            <th>Type</th>
+                                            <th>Maintenance (₹)</th>
+                                            <th>Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="flatsTableBody"></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- TAB: BILLING -->
+                    <div id="tab-billing" class="tab-content d-none">
+                        <h2 class="mb-4">Bills & Society Expenditures</h2>
+                        <div class="glass-card">
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <h4>Maintenance Bills</h4>
+                                <button class="btn btn-grad btn-sm" id="btnGenBills" onclick="generateBills()"><i class="fa-solid fa-cogs me-2"></i>Generate Monthly Bills</button>
+                            </div>
+                            <div class="table-responsive">
+                                <table class="table align-middle">
+                                    <thead>
+                                        <tr>
+                                            <th>Bill No</th>
+                                            <th>Flat</th>
+                                            <th>Month</th>
+                                            <th>Total (₹)</th>
+                                            <th>Paid (₹)</th>
+                                            <th>Balance (₹)</th>
+                                            <th>Due Date</th>
+                                            <th>Status</th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="billsTableBody"></tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="glass-card">
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <h4>Society Expenses</h4>
+                                <button class="btn btn-grad btn-sm" onclick="showExpenseModal()"><i class="fa-solid fa-plus me-2"></i>Log Expense</button>
+                            </div>
+                            <div class="table-responsive">
+                                <table class="table align-middle">
+                                    <thead>
+                                        <tr>
+                                            <th>Date</th>
+                                            <th>Category</th>
+                                            <th>Description</th>
+                                            <th>Amount (₹)</th>
+                                            <th>Vendor</th>
+                                            <th>Approved By</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="expensesTableBody"></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- TAB: COMPLAINTS -->
+                    <div id="tab-complaints" class="tab-content d-none">
+                        <h2 class="mb-4">Complaints & Helpdesk</h2>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="glass-card">
+                                    <h4>File a Complaint</h4>
+                                    <form id="complaintForm" class="mt-3">
+                                        <div class="mb-3">
+                                            <label class="form-label">Category</label>
+                                            <select class="form-select" id="complaintCategory" required></select>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="form-label">Title</label>
+                                            <input type="text" class="form-control" id="complaintTitle" required>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="form-label">Priority</label>
+                                            <select class="form-select" id="complaintPriority">
+                                                <option value="low">Low</option>
+                                                <option value="medium" selected>Medium</option>
+                                                <option value="high">High</option>
+                                                <option value="urgent">Urgent</option>
+                                            </select>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="form-label">Description</label>
+                                            <textarea class="form-control" id="complaintDescription" rows="4" required></textarea>
+                                        </div>
+                                        <button type="submit" class="btn btn-grad w-100">Submit Complaint</button>
+                                    </form>
+                                </div>
+                            </div>
+                            <div class="col-md-8">
+                                <div class="glass-card">
+                                    <h4>Logged Issues</h4>
+                                    <div class="table-responsive mt-3">
+                                        <table class="table align-middle">
+                                            <thead>
+                                                <tr>
+                                                    <th>No</th>
+                                                    <th>Title</th>
+                                                    <th>Priority</th>
+                                                    <th>Filed Date</th>
+                                                    <th>Status</th>
+                                                    <th>Action</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="complaintsTableBody"></tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- TAB: VISITORS -->
+                    <div id="tab-visitors" class="tab-content d-none">
+                        <h2 class="mb-4">Visitor & Gate Security Management</h2>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="glass-card">
+                                    <h4>Log Visitor Entry</h4>
+                                    <form id="visitorForm" class="mt-3">
+                                        <div class="mb-3">
+                                            <label class="form-label">Visitor Name</label>
+                                            <input type="text" class="form-control" id="visitorNameInput" required>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="form-label">Phone Number</label>
+                                            <input type="text" class="form-control" id="visitorPhoneInput" required>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="form-label">Target Flat</label>
+                                            <select class="form-select" id="visitorFlatSelect" required></select>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="form-label">Purpose</label>
+                                            <select class="form-select" id="visitorPurposeSelect">
+                                                <option value="personal">Personal Visit</option>
+                                                <option value="delivery">Delivery</option>
+                                                <option value="service">Service/Maintenance</option>
+                                                <option value="guest">Guest</option>
+                                                <option value="other">Other</option>
+                                            </select>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="form-label">Purpose Details</label>
+                                            <input type="text" class="form-control" id="visitorPurposeDetails">
+                                        </div>
+                                        <button type="submit" class="btn btn-grad w-100">Log Entry</button>
+                                    </form>
+                                </div>
+                            </div>
+                            <div class="col-md-8">
+                                <div class="glass-card">
+                                    <h4>Current Visitors Inside</h4>
+                                    <div class="table-responsive mt-3">
+                                        <table class="table align-middle">
+                                            <thead>
+                                                <tr>
+                                                    <th>Name</th>
+                                                    <th>Phone</th>
+                                                    <th>Flat</th>
+                                                    <th>Entry Time</th>
+                                                    <th>Purpose</th>
+                                                    <th>Status</th>
+                                                    <th>Action</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="visitorsTableBody"></tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- TAB: NOTICES -->
+                    <div id="tab-notices" class="tab-content d-none">
+                        <h2 class="mb-4">Bulletin Board & Opinion Polls</h2>
+                        <div class="row">
+                            <div class="col-md-7">
+                                <div class="glass-card">
+                                    <div class="d-flex justify-content-between align-items-center mb-3">
+                                        <h4>Notice Board</h4>
+                                        <button class="btn btn-grad btn-sm" onclick="showNoticeModal()">Publish Notice</button>
+                                    </div>
+                                    <div id="noticesContainer" class="mt-3"></div>
+                                </div>
+                            </div>
+                            <div class="col-md-5">
+                                <div class="glass-card">
+                                    <h4>Opinion Polls</h4>
+                                    <div id="pollsContainer" class="mt-3"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- TAB: PARKING -->
+                    <div id="tab-parking" class="tab-content d-none">
+                        <h2 class="mb-4">Parking Allocation Directory</h2>
+                        <div class="glass-card">
+                            <h4>Parking Slots Allocation</h4>
+                            <div class="table-responsive mt-3">
+                                <table class="table align-middle">
+                                    <thead>
+                                        <tr>
+                                            <th>Slot Number</th>
+                                            <th>Type</th>
+                                            <th>Zone</th>
+                                            <th>Charge (₹)</th>
+                                            <th>Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="parkingTableBody"></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- TAB: EVENTS -->
+                    <div id="tab-events" class="tab-content d-none">
+                        <h2 class="mb-4">Events & Amenity Booking</h2>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="glass-card">
+                                    <h4>Society Amenities</h4>
+                                    <div class="table-responsive mt-3">
+                                        <table class="table align-middle">
+                                            <thead>
+                                                <tr>
+                                                    <th>Name</th>
+                                                    <th>Capacity</th>
+                                                    <th>Charge (₹)</th>
+                                                    <th>Hours</th>
+                                                    <th>Action</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="amenitiesTableBody"></tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="glass-card">
+                                    <h4>Book an Amenity</h4>
+                                    <form id="bookingForm" class="mt-3">
+                                        <div class="mb-3">
+                                            <label class="form-label">Amenity</label>
+                                            <select class="form-select" id="bookingAmenitySelect" required></select>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="form-label">Booking Date</label>
+                                            <input type="date" class="form-control" id="bookingDateInput" required>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="form-label">Start Time</label>
+                                            <input type="time" class="form-control" id="bookingStartInput" required>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="form-label">End Time</label>
+                                            <input type="time" class="form-control" id="bookingEndInput" required>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="form-label">Purpose</label>
+                                            <input type="text" class="form-control" id="bookingPurposeInput" required>
+                                        </div>
+                                        <button type="submit" class="btn btn-grad w-100">Request Booking</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL: PAY BILL -->
+    <div class="modal fade" id="payBillModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content bg-white text-dark">
+                <div class="modal-header">
+                    <h5 class="modal-title">Pay Bill</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <form id="payBillForm">
+                    <input type="hidden" id="payBillId">
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label class="form-label">Amount (₹)</label>
+                            <input type="text" class="form-control" id="payBillAmount" readonly>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Payment Method</label>
+                            <select class="form-select" id="payBillMethod">
+                                <option value="upi">UPI</option>
+                                <option value="online">Online Transfer</option>
+                                <option value="cash">Cash</option>
+                                <option value="cheque">Cheque</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Transaction ID / Reference</label>
+                            <input type="text" class="form-control" id="payBillTxn" placeholder="e.g. TXN9876543">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Notes</label>
+                            <textarea class="form-control" id="payBillNotes" rows="2"></textarea>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-grad">Submit Payment</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL: PUBLISH NOTICE -->
+    <div class="modal fade" id="noticeModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content bg-white text-dark">
+                <div class="modal-header">
+                    <h5 class="modal-title">Publish Notice</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <form id="noticeForm">
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label class="form-label">Title</label>
+                            <input type="text" class="form-control" id="noticeTitle" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Type</label>
+                            <select class="form-select" id="noticeType">
+                                <option value="general">General Announcement</option>
+                                <option value="meeting">Meeting Notice</option>
+                                <option value="emergency">Emergency Alert</option>
+                                <option value="rule">Rules & Regulations</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Priority</label>
+                            <select class="form-select" id="noticePriority">
+                                <option value="low">Low</option>
+                                <option value="medium" selected>Medium</option>
+                                <option value="high">High</option>
+                                <option value="urgent">Urgent</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Content</label>
+                            <textarea class="form-control" id="noticeContent" rows="5" required></textarea>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-grad">Publish</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        let currentUser = null;
+        let payModalObj = null;
+        let noticeModalObj = null;
+
+        document.addEventListener("DOMContentLoaded", () => {
+            payModalObj = new bootstrap.Modal(document.getElementById('payBillModal'));
+            noticeModalObj = new bootstrap.Modal(document.getElementById('noticeModal'));
+
+            // Check if user is logged in
+            fetchUser();
+
+            document.getElementById("loginForm").addEventListener("submit", (e) => {
+                e.preventDefault();
+                login();
+            });
+
+            document.getElementById("complaintForm").addEventListener("submit", (e) => {
+                e.preventDefault();
+                submitComplaint();
+            });
+
+            document.getElementById("visitorForm").addEventListener("submit", (e) => {
+                e.preventDefault();
+                submitVisitor();
+            });
+
+            document.getElementById("payBillForm").addEventListener("submit", (e) => {
+                e.preventDefault();
+                submitBillPayment();
+            });
+
+            document.getElementById("noticeForm").addEventListener("submit", (e) => {
+                e.preventDefault();
+                submitNotice();
+            });
+
+            document.getElementById("bookingForm").addEventListener("submit", (e) => {
+                e.preventDefault();
+                submitBooking();
+            });
+        });
+
+        function fetchUser() {
+            fetch("/api/auth/user")
+                .then(res => {
+                    if (res.ok) return res.json();
+                    throw new Error("Not logged in");
+                })
+                .then(user => {
+                    currentUser = user;
+                    showApp();
+                })
+                .catch(() => {
+                    showLogin();
+                });
+        }
+
+        function login() {
+            const username = document.getElementById("username").value;
+            const password = document.getElementById("password").value;
+
+            fetch("/api/auth/login", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ username, password })
+            })
+            .then(res => {
+                if (res.ok) return res.json();
+                return res.json().then(err => { throw new Error(err.message || "Login failed"); });
+            })
+            .then(user => {
+                currentUser = user;
+                showApp();
+            })
+            .catch(err => {
+                const errDiv = document.getElementById("loginError");
+                errDiv.innerText = err.message;
+                errDiv.classList.remove("d-none");
+            });
+        }
+
+        function logout() {
+            fetch("/api/auth/logout", { method: "POST" })
+                .then(() => {
+                    currentUser = null;
+                    showLogin();
+                });
+        }
+
+        function showLogin() {
+            document.getElementById("loginGate").classList.remove("d-none");
+            document.getElementById("appContainer").classList.add("d-none");
+        }
+
+        function showApp() {
+            document.getElementById("loginGate").classList.add("d-none");
+            document.getElementById("appContainer").classList.remove("d-none");
+            
+            document.getElementById("navFullName").innerText = currentUser.firstName + " " + currentUser.lastName;
+            document.getElementById("navUsername").innerText = "@" + currentUser.username;
+            document.getElementById("userRoleBadge").innerText = currentUser.role.toUpperCase();
+
+            // Set role specific display settings
+            if (currentUser.role === 'resident') {
+                document.getElementById("btnGenBills").style.display = 'none';
+            } else {
+                document.getElementById("btnGenBills").style.display = 'block';
+            }
+
+            // Load default tab
+            switchTab('dashboard');
+        }
+
+        function switchTab(tabId) {
+            document.querySelectorAll(".tab-content").forEach(el => el.classList.add("d-none"));
+            document.getElementById("tab-" + tabId).classList.remove("d-none");
+
+            document.querySelectorAll(".sidebar .nav-link").forEach(el => el.classList.remove("active"));
+            
+            // Find nav-link with corresponding text
+            const links = document.querySelectorAll(".sidebar .nav-link");
+            links.forEach(l => {
+                if (l.getAttribute("onclick").includes(tabId)) {
+                    l.classList.add("active");
+                }
+            });
+
+            // Load data
+            if (tabId === 'dashboard') loadDashboard();
+            if (tabId === 'flats') loadFlats();
+            if (tabId === 'billing') loadBilling();
+            if (tabId === 'complaints') loadComplaints();
+            if (tabId === 'visitors') loadVisitors();
+            if (tabId === 'notices') loadNoticesAndPolls();
+            if (tabId === 'parking') loadParking();
+            if (tabId === 'events') loadEvents();
+        }
+
+        // 1. Dashboard Tab
+        function loadDashboard() {
+            // Fetch overview stats
+            fetch("/api/flats").then(res => res.json()).then(flats => {
+                document.getElementById("statFlats").innerText = flats.length;
+            });
+            fetch("/api/residents").then(res => res.json()).then(res => {
+                document.getElementById("statResidents").innerText = res.length;
+            });
+            fetch("/api/complaints").then(res => res.json()).then(comps => {
+                const pending = comps.filter(c => c.status === 'pending').length;
+                document.getElementById("statComplaints").innerText = pending;
+            });
+            fetch("/api/parking-slots").then(res => res.json()).then(slots => {
+                const avail = slots.filter(s => s.status === 'available').length;
+                document.getElementById("statParking").innerText = avail;
+            });
+
+            // Load quick list of notices
+            fetch("/api/notices").then(res => res.json()).then(notices => {
+                let html = "";
+                notices.slice(0, 3).forEach(n => {
+                    html += `
+                        <div class="border-bottom border-secondary py-2">
+                            <span class="badge bg-${n.priority === 'high' || n.priority === 'urgent' ? 'danger' : 'info'} float-end">${n.priority.toUpperCase()}</span>
+                            <h6>${n.title}</h6>
+                            <p class="text-muted mb-0"><small>${n.content.substring(0, 100)}...</small></p>
+                        </div>
+                    `;
+                });
+                document.getElementById("dashboardNotices").innerHTML = html || "<p class='text-muted'>No notices.</p>";
+            });
+
+            // Load quick events
+            fetch("/api/events").then(res => res.json()).then(events => {
+                let html = "";
+                events.slice(0, 3).forEach(e => {
+                    html += `
+                        <div class="border-bottom border-secondary py-2">
+                            <h6>${e.title}</h6>
+                            <p class="text-muted mb-0"><small><i class="fa-solid fa-map-marker me-1"></i>${e.venue} | <i class="fa-solid fa-clock me-1"></i>${e.startDatetime.substring(0,10)}</small></p>
+                        </div>
+                    `;
+                });
+                document.getElementById("dashboardEvents").innerHTML = html || "<p class='text-muted'>No upcoming events.</p>";
+            });
+        }
+
+        // 2. Flats Tab
+        function loadFlats() {
+            fetch("/api/flats").then(res => res.json()).then(flats => {
+                let html = "";
+                flats.forEach(f => {
+                    html += `
+                        <tr>
+                            <td>Flat ${f.flatNumber}</td>
+                            <td>Floor ${f.floor}</td>
+                            <td>Block ${f.block}</td>
+                            <td>${f.flatType}</td>
+                            <td>₹${f.monthlyMaintenance}</td>
+                            <td><span class="badge bg-${f.occupancyStatus === 'occupied' ? 'success' : 'secondary'}">${f.occupancyStatus.toUpperCase()}</span></td>
+                        </tr>
+                    `;
+                });
+                document.getElementById("flatsTableBody").innerHTML = html;
+            });
+        }
+
+        // 3. Billing Tab
+        function loadBilling() {
+            fetch("/api/bills").then(res => res.json()).then(bills => {
+                let html = "";
+                bills.forEach(b => {
+                    let action = "";
+                    if (b.status !== 'paid') {
+                        action = `<button class="btn btn-grad btn-sm" onclick="openPayModal(${b.id}, '${b.balanceAmount}')">Pay Now</button>`;
+                    } else {
+                        action = `<span class="text-success"><i class="fa-solid fa-check-circle me-1"></i>Settled</span>`;
+                    }
+
+                    html += `
+                        <tr>
+                            <td><code>${b.billNumber}</code></td>
+                            <td>Flat ${b.flat.flatNumber}</td>
+                            <td>${b.billingMonth.substring(0, 7)}</td>
+                            <td>₹${b.totalAmount}</td>
+                            <td>₹${b.paidAmount}</td>
+                            <td>₹${b.balanceAmount}</td>
+                            <td>${b.dueDate}</td>
+                            <td><span class="badge ${b.status === 'paid' ? 'bg-success' : b.status === 'overdue' ? 'bg-danger' : 'bg-warning'}">${b.status.toUpperCase()}</span></td>
+                            <td>${action}</td>
+                        </tr>
+                    `;
+                });
+                document.getElementById("billsTableBody").innerHTML = html || "<tr><td colspan='9' class='text-center text-muted'>No bills found.</td></tr>";
+            });
+
+            // Load Expenses
+            fetch("/api/expenses").then(res => res.json()).then(expenses => {
+                let html = "";
+                expenses.forEach(e => {
+                    html += `
+                        <tr>
+                            <td>${e.expenseDate}</td>
+                            <td>${e.category ? e.category.name : 'Uncategorized'}</td>
+                            <td>${e.description}</td>
+                            <td>₹${e.amount}</td>
+                            <td>${e.vendorName || '-'}</td>
+                            <td>${e.approvedBy ? e.approvedBy.firstName + ' ' + e.approvedBy.lastName : '-'}</td>
+                        </tr>
+                    `;
+                });
+                document.getElementById("expensesTableBody").innerHTML = html || "<tr><td colspan='6' class='text-center text-muted'>No expenses recorded.</td></tr>";
+            });
+        }
+
+        function generateBills() {
+            fetch("/api/bills/generate", { method: "POST" })
+                .then(res => {
+                    if (res.ok) {
+                        alert("Monthly maintenance bills generated successfully!");
+                        loadBilling();
+                    }
+                });
+        }
+
+        function openPayModal(billId, balance) {
+            document.getElementById("payBillId").value = billId;
+            document.getElementById("payBillAmount").value = balance;
+            payModalObj.show();
+        }
+
+        function submitBillPayment() {
+            const billId = document.getElementById("payBillId").value;
+            const amount = document.getElementById("payBillAmount").value;
+            const method = document.getElementById("payBillMethod").value;
+            const txn = document.getElementById("payBillTxn").value;
+            const notes = document.getElementById("payBillNotes").value;
+
+            fetch(`/api/bills/${billId}/pay`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ amount, paymentMethod: method, transactionId: txn, notes })
+            })
+            .then(res => {
+                if (res.ok) {
+                    payModalObj.hide();
+                    alert("Payment recorded successfully!");
+                    loadBilling();
+                } else {
+                    alert("Error posting payment");
+                }
+            });
+        }
+
+        // 4. Complaints Tab
+        function loadComplaints() {
+            // Load categories in dropdown
+            fetch("/api/complaint-categories").then(res => res.json()).then(cats => {
+                let html = "";
+                cats.forEach(c => {
+                    html += `<option value="${c.id}">${c.name}</option>`;
+                });
+                document.getElementById("complaintCategory").innerHTML = html;
+            });
+
+            // Load list
+            fetch("/api/complaints").then(res => res.json()).then(comps => {
+                let html = "";
+                comps.forEach(c => {
+                    let actions = "";
+                    if (currentUser.role !== 'resident' && c.status === 'pending') {
+                        actions = `<button class="btn btn-outline-success btn-sm" onclick="resolveComplaint(${c.id})">Resolve</button>`;
+                    } else if (c.status === 'resolved' && currentUser.role === 'resident') {
+                        actions = `<button class="btn btn-outline-secondary btn-sm" onclick="closeComplaint(${c.id})">Close</button>`;
+                    } else {
+                        actions = `<small class="text-muted">No Actions</small>`;
+                    }
+
+                    html += `
+                        <tr>
+                            <td><code>${c.complaintNumber}</code></td>
+                            <td>${c.title}</td>
+                            <td><span class="badge bg-${c.priority === 'urgent' || c.priority === 'high' ? 'danger' : 'info'}">${c.priority.toUpperCase()}</span></td>
+                            <td>${c.filedDate.substring(0, 10)}</td>
+                            <td><span class="badge ${c.status === 'resolved' ? 'bg-success' : c.status === 'pending' ? 'bg-warning' : 'bg-secondary'}">${c.status.toUpperCase()}</span></td>
+                            <td>${actions}</td>
+                        </tr>
+                    `;
+                });
+                document.getElementById("complaintsTableBody").innerHTML = html || "<tr><td colspan='6' class='text-center text-muted'>No complaints filed.</td></tr>";
+            });
+        }
+
+        function submitComplaint() {
+            const categoryId = document.getElementById("complaintCategory").value;
+            const title = document.getElementById("complaintTitle").value;
+            const priority = document.getElementById("complaintPriority").value;
+            const description = document.getElementById("complaintDescription").value;
+
+            fetch("/api/complaints", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ categoryId, title, priority, description })
+            })
+            .then(res => {
+                if (res.ok) {
+                    alert("Complaint filed successfully!");
+                    document.getElementById("complaintForm").reset();
+                    loadComplaints();
+                } else {
+                    alert("Error filing complaint");
+                }
+            });
+        }
+
+        function resolveComplaint(id) {
+            fetch(`/api/complaints/${id}/status`, {
+                method: "PUT",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ status: "resolved", resolutionNotes: "Issue resolved by team" })
+            }).then(() => {
+                alert("Complaint resolved!");
+                loadComplaints();
+            });
+        }
+
+        function closeComplaint(id) {
+            fetch(`/api/complaints/${id}/status`, {
+                method: "PUT",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ status: "closed" })
+            }).then(() => {
+                alert("Complaint closed!");
+                loadComplaints();
+            });
+        }
+
+        // 5. Visitors Tab
+        function loadVisitors() {
+            // Load flats in dropdown
+            fetch("/api/flats").then(res => res.json()).then(flats => {
+                let html = "";
+                flats.forEach(f => {
+                    html += `<option value="${f.id}">Flat ${f.flatNumber}</option>`;
+                });
+                document.getElementById("visitorFlatSelect").innerHTML = html;
+            });
+
+            // Load visitors list
+            fetch("/api/visitors").then(res => res.json()).then(visitors => {
+                let html = "";
+                visitors.forEach(v => {
+                    let action = "";
+                    if (!v.exitTime) {
+                        action = `<button class="btn btn-outline-danger btn-sm" onclick="checkoutVisitor(${v.id})">Exit</button>`;
+                    } else {
+                        action = `<small class="text-muted">Checked out at ${v.exitTime.substring(11,16)}</small>`;
+                    }
+
+                    html += `
+                        <tr>
+                            <td>${v.visitorName}</td>
+                            <td>${v.phoneNumber}</td>
+                            <td>Flat ${v.flat ? v.flat.flatNumber : '-'}</td>
+                            <td>${v.entryTime.substring(0,10)} ${v.entryTime.substring(11,16)}</td>
+                            <td>${v.purpose.toUpperCase()}</td>
+                            <td><span class="badge ${!v.exitTime ? 'bg-success' : 'bg-secondary'}">${!v.exitTime ? 'INSIDE' : 'EXITED'}</span></td>
+                            <td>${action}</td>
+                        </tr>
+                    `;
+                });
+                document.getElementById("visitorsTableBody").innerHTML = html || "<tr><td colspan='7' class='text-center text-muted'>No visitors registered today.</td></tr>";
+            });
+        }
+
+        function submitVisitor() {
+            const visitorName = document.getElementById("visitorNameInput").value;
+            const phoneNumber = document.getElementById("visitorPhoneInput").value;
+            const flatId = document.getElementById("visitorFlatSelect").value;
+            const purpose = document.getElementById("visitorPurposeSelect").value;
+            const purposeDetails = document.getElementById("visitorPurposeDetails").value;
+
+            fetch("/api/visitors", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ visitorName, phoneNumber, flatId, purpose, purposeDetails })
+            }).then(res => {
+                if (res.ok) {
+                    alert("Visitor entry logged successfully!");
+                    document.getElementById("visitorForm").reset();
+                    loadVisitors();
+                } else {
+                    alert("Error logging entry");
+                }
+            });
+        }
+
+        function checkoutVisitor(id) {
+            fetch(`/api/visitors/${id}/checkout`, { method: "PUT" })
+                .then(() => {
+                    alert("Visitor checked out!");
+                    loadVisitors();
+                });
+        }
+
+        // 6. Notices & Polls Tab
+        function loadNoticesAndPolls() {
+            // Load Notices
+            fetch("/api/notices").then(res => res.json()).then(notices => {
+                let html = "";
+                notices.forEach(n => {
+                    html += `
+                        <div class="glass-card mb-3 py-3 border-left border-3 border-${n.priority === 'high' || n.priority === 'urgent' ? 'danger' : 'info'}">
+                            <span class="badge bg-secondary float-end">${n.noticeType.toUpperCase()}</span>
+                            <h5>${n.title}</h5>
+                            <p class="mb-2 text-secondary">${n.content}</p>
+                            <div class="d-flex justify-content-between text-muted"><small>Published by: ${n.publishedBy ? n.publishedBy.firstName + ' ' + n.publishedBy.lastName : 'Admin'}</small> <small>Date: ${n.publishedDate.substring(0,10)}</small></div>
+                        </div>
+                    `;
+                });
+                document.getElementById("noticesContainer").innerHTML = html || "<p class='text-muted'>No notices on bulletin board.</p>";
+            });
+
+            // Load Polls
+            fetch("/api/polls").then(res => res.json()).then(polls => {
+                let html = "";
+                polls.forEach(p => {
+                    html += `
+                        <div class="glass-card mb-3">
+                            <h6>${p.title}</h6>
+                            <p class="text-muted"><small>${p.description}</small></p>
+                            <div id="poll-options-${p.id}"></div>
+                        </div>
+                    `;
+                    // Fetch options for poll
+                    fetch(`/api/polls/${p.id}/options`).then(r => r.json()).then(options => {
+                        let optHtml = "";
+                        options.forEach(o => {
+                            optHtml += `
+                                <div class="form-check mb-2">
+                                    <input class="form-check-input" type="radio" name="pollRadio-${p.id}" id="opt-${o.id}" value="${o.id}">
+                                    <label class="form-check-label text-dark" for="opt-${o.id}">
+                                        ${o.optionText} <span class="text-muted">(${o.voteCount} votes)</span>
+                                    </label>
+                                </div>
+                            `;
+                        });
+                        optHtml += `<button class="btn btn-grad btn-sm w-100 mt-2" onclick="submitPollVote(${p.id})">Vote</button>`;
+                        document.getElementById(`poll-options-${p.id}`).innerHTML = optHtml;
+                    });
+                });
+                document.getElementById("pollsContainer").innerHTML = html || "<p class='text-muted'>No active polls.</p>";
+            });
+        }
+
+        function showNoticeModal() {
+            noticeModalObj.show();
+        }
+
+        function submitNotice() {
+            const title = document.getElementById("noticeTitle").value;
+            const noticeType = document.getElementById("noticeType").value;
+            const priority = document.getElementById("noticePriority").value;
+            const content = document.getElementById("noticeContent").value;
+
+            fetch("/api/notices", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ title, noticeType, priority, content })
+            }).then(res => {
+                if (res.ok) {
+                    noticeModalObj.hide();
+                    alert("Notice published!");
+                    loadNoticesAndPolls();
+                } else {
+                    alert("Error publishing notice");
+                }
+            });
+        }
+
+        function submitPollVote(pollId) {
+            const checked = document.querySelector(`input[name="pollRadio-${pollId}"]:checked`);
+            if (!checked) {
+                alert("Please select an option to vote");
+                return;
+            }
+            const optionId = checked.value;
+
+            fetch(`/api/polls/${pollId}/vote`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ optionId })
+            }).then(res => {
+                if (res.ok) {
+                    alert("Vote registered!");
+                    loadNoticesAndPolls();
+                } else {
+                    return res.text().then(err => alert(err));
+                }
+            });
+        }
+
+        // 7. Parking Tab
+        function loadParking() {
+            fetch("/api/parking-slots").then(res => res.json()).then(slots => {
+                let html = "";
+                slots.forEach(s => {
+                    html += `
+                        <tr>
+                            <td><code>Slot ${s.slotNumber}</code></td>
+                            <td>${s.slotType === 'two_wheeler' ? 'Two Wheeler' : s.slotType === 'four_wheeler' ? 'Four Wheeler' : 'Visitor Parking'}</td>
+                            <td>Zone ${s.zone}</td>
+                            <td>₹${s.monthlyCharge}</td>
+                            <td><span class="badge bg-${s.status === 'available' ? 'success' : s.status === 'occupied' ? 'danger' : 'secondary'}">${s.status.toUpperCase()}</span></td>
+                        </tr>
+                    `;
+                });
+                document.getElementById("parkingTableBody").innerHTML = html;
+            });
+        }
+
+        // 8. Events & Amenities Tab
+        function loadEvents() {
+            // Load Amenities
+            fetch("/api/amenities").then(res => res.json()).then(amenities => {
+                let html = "";
+                let selectHtml = "";
+                amenities.forEach(a => {
+                    html += `
+                        <tr>
+                            <td>${a.name}</td>
+                            <td>${a.capacity} persons</td>
+                            <td>₹${a.bookingCharge}</td>
+                            <td>${a.availableFrom.substring(0,5)} - ${a.availableTo.substring(0,5)}</td>
+                            <td><button class="btn btn-outline-info btn-sm" onclick="selectAmenityForBooking(${a.id})">Book</button></td>
+                        </tr>
+                    `;
+                    selectHtml += `<option value="${a.id}">${a.name} (₹${a.bookingCharge})</option>`;
+                });
+                document.getElementById("amenitiesTableBody").innerHTML = html || "<tr><td colspan='5' class='text-center text-muted'>No amenities found.</td></tr>";
+                document.getElementById("bookingAmenitySelect").innerHTML = selectHtml;
+            });
+        }
+
+        function selectAmenityForBooking(id) {
+            document.getElementById("bookingAmenitySelect").value = id;
+        }
+
+        function submitBooking() {
+            const amenityId = document.getElementById("bookingAmenitySelect").value;
+            const bookingDate = document.getElementById("bookingDateInput").value;
+            const startTime = document.getElementById("bookingStartInput").value;
+            const endTime = document.getElementById("bookingEndInput").value;
+            const purpose = document.getElementById("bookingPurposeInput").value;
+
+            fetch("/api/amenity-bookings", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ amenityId, bookingDate, startTime, endTime, purpose, numberOfGuests: 10 })
+            }).then(res => {
+                if (res.ok) {
+                    alert("Amenity booking submitted and confirmed!");
+                    document.getElementById("bookingForm").reset();
+                } else {
+                    alert("Error booking amenity");
+                }
+            });
+        }
+    </script>
+</body>
+</html>
