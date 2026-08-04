@@ -1,0 +1,171 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  html {
+    scroll-behavior: smooth;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  body {
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    color: #1e293b;
+    background-color: #f8fafc;
+    line-height: 1.6;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Outfit', system-ui, sans-serif;
+    font-weight: 700;
+    line-height: 1.25;
+    letter-spacing: -0.015em;
+  }
+}
+
+@layer components {
+  /* Ultra-smooth Glassmorphism Cards */
+  .glass-card {
+    @apply bg-white/80 backdrop-blur-md border border-slate-200/70 rounded-2xl shadow-glass transition-all duration-300;
+  }
+
+  .glass-card-solid {
+    @apply bg-white border border-slate-200/80 rounded-2xl shadow-card;
+  }
+
+  .glass-card-hover {
+    @apply glass-card transition-all duration-300 hover:shadow-glass-lg hover:-translate-y-0.5 hover:border-primary-200/60;
+  }
+
+  /* Premium light gradient backgrounds */
+  .gradient-primary {
+    @apply bg-gradient-to-r from-primary-500 via-primary-600 to-indigo-600;
+  }
+
+  .gradient-hero {
+    background: linear-gradient(135deg, #6366f1 0%, #a855f7 50%, #f59e0b 100%);
+  }
+
+  .gradient-gold {
+    @apply bg-gradient-to-r from-amber-400 to-amber-600;
+  }
+
+  .gradient-mesh {
+    background: 
+      radial-gradient(at 20% 20%, rgba(99, 102, 241, 0.05) 0px, transparent 50%),
+      radial-gradient(at 80% 0%, rgba(245, 158, 11, 0.04) 0px, transparent 50%),
+      radial-gradient(at 50% 80%, rgba(168, 85, 247, 0.04) 0px, transparent 50%);
+  }
+
+  /* Premium Button Styles */
+  .btn-primary {
+    @apply inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-gradient-to-r from-primary-500 to-primary-600 text-white font-semibold rounded-xl
+           transition-all duration-200 shadow-md shadow-primary-500/20 hover:from-primary-600 hover:to-primary-700 hover:shadow-lg hover:shadow-primary-500/30 active:scale-[0.98]
+           focus:outline-none focus:ring-2 focus:ring-primary-500/40 focus:ring-offset-2;
+  }
+
+  .btn-secondary {
+    @apply inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-white text-primary-600 font-semibold rounded-xl
+           border border-slate-200/80 transition-all duration-200 hover:bg-primary-50/60 hover:border-primary-200 hover:text-primary-700
+           active:scale-[0.98] focus:outline-none focus:ring-2 focus:ring-primary-500/30;
+  }
+
+  .btn-gold {
+    @apply inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-gradient-to-r from-amber-500 to-amber-600 text-white font-semibold rounded-xl
+           transition-all duration-200 shadow-md shadow-amber-500/20 hover:from-amber-600 hover:to-amber-700 hover:shadow-lg hover:shadow-amber-500/30 active:scale-[0.98]
+           focus:outline-none focus:ring-2 focus:ring-amber-500/40 focus:ring-offset-2;
+  }
+
+  .btn-ghost {
+    @apply inline-flex items-center justify-center gap-2 px-4 py-2 text-slate-600 font-medium rounded-xl
+           transition-all duration-200 hover:bg-slate-100 hover:text-slate-900;
+  }
+
+  /* Input Field Styles */
+  .input-field {
+    @apply w-full px-4 py-2.5 bg-white border border-slate-200 rounded-xl text-slate-900 placeholder-slate-400 text-sm
+           transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary-500/25 focus:border-primary-500 shadow-sm;
+  }
+
+  /* Badge Styles */
+  .badge {
+    @apply inline-flex items-center px-2.5 py-0.5 text-[11px] font-bold rounded-full tracking-wide;
+  }
+
+  .badge-primary {
+    @apply badge bg-primary-100/80 text-primary-700 border border-primary-200/60;
+  }
+
+  .badge-success {
+    @apply badge bg-emerald-100/80 text-emerald-800 border border-emerald-200/60;
+  }
+
+  .badge-warning {
+    @apply badge bg-amber-100/80 text-amber-800 border border-amber-200/60;
+  }
+
+  .badge-danger {
+    @apply badge bg-rose-100/80 text-rose-800 border border-rose-200/60;
+  }
+
+  .badge-info {
+    @apply badge bg-blue-100/80 text-blue-800 border border-blue-200/60;
+  }
+
+  .badge-gold {
+    @apply badge bg-amber-100 text-amber-900 border border-amber-300/60;
+  }
+
+  /* Sidebar Navigation Links */
+  .sidebar-link {
+    @apply flex items-center gap-3 px-3.5 py-2.5 text-slate-600 rounded-xl font-medium text-sm
+           transition-all duration-200 hover:bg-primary-50/70 hover:text-primary-600;
+  }
+
+  .sidebar-link-active {
+    @apply flex items-center gap-3 px-3.5 py-2.5 text-white bg-gradient-to-r from-primary-500 to-primary-600 rounded-xl font-semibold text-sm
+           shadow-md shadow-primary-500/20 scale-[1.01];
+  }
+
+  /* Stat Cards */
+  .stat-card {
+    @apply glass-card-solid p-6 flex flex-col gap-2 transition-all duration-300 hover:shadow-glass hover:border-primary-100;
+  }
+
+  /* Custom Scrollbar */
+  .custom-scrollbar::-webkit-scrollbar {
+    width: 5px;
+    height: 5px;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 4px;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: #94a3b8;
+  }
+}
+
+@layer utilities {
+  .text-gradient {
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-primary-600 to-amber-500;
+  }
+
+  .text-gradient-purple {
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-primary-600 via-purple-600 to-primary-400;
+  }
+}
+
